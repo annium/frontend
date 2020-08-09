@@ -1,6 +1,7 @@
 # editors
 .idea/
 *.DotSettings.user
+.vscode/
 
 # xs ignore patterns
 .xs.ignore
