@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Annium.Components.State.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Annium.Components.State", "shared\src\Annium.Components.State\Annium.Components.State.csproj", "{430C1F2E-8D77-4CB2-82E7-3E195E9DF55E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Annium.Components.State.Operation", "shared\src\Annium.Components.State.Operation\Annium.Components.State.Operation.csproj", "{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -168,6 +170,18 @@ Global
 		{430C1F2E-8D77-4CB2-82E7-3E195E9DF55E}.Release|x64.Build.0 = Release|Any CPU
 		{430C1F2E-8D77-4CB2-82E7-3E195E9DF55E}.Release|x86.ActiveCfg = Release|Any CPU
 		{430C1F2E-8D77-4CB2-82E7-3E195E9DF55E}.Release|x86.Build.0 = Release|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Debug|x64.Build.0 = Debug|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Debug|x86.Build.0 = Debug|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Release|x64.ActiveCfg = Release|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Release|x64.Build.0 = Release|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Release|x86.ActiveCfg = Release|Any CPU
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2270A23F-C82A-45CA-8874-7A36BF2AFFBA} = {10365A46-EB95-4C3F-886C-4A0C883BB0AB}
@@ -184,5 +198,6 @@ Global
 		{CAC3379A-F1E7-43B7-B11B-0AE171E5720B} = {48DC6358-8854-4D2E-996E-A18AEFC40F82}
 		{7D7CF2A1-3AC4-4590-A1EB-4AB048A9BA9B} = {07971D40-32C2-4307-9E9D-7985E301FB1C}
 		{430C1F2E-8D77-4CB2-82E7-3E195E9DF55E} = {07971D40-32C2-4307-9E9D-7985E301FB1C}
+		{D8AB1EDB-9CA4-4CD0-8FC8-FEDBEE1C2889} = {07971D40-32C2-4307-9E9D-7985E301FB1C}
 	EndGlobalSection
 EndGlobal
