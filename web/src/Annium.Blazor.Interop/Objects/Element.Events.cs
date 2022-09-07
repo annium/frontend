@@ -10,9 +10,9 @@ namespace Annium.Blazor.Interop;
 
 public partial record Element
 {
-    private readonly InteropEvent<WheelEvent> _wheelEvent = new();
-    private readonly Dictionary<MouseEventEnum, InteropEvent<MouseEvent>> _mouseEvents = new();
-    private readonly Dictionary<KeyboardEventEnum, InteropEvent<KeyboardEvent>> _keyboardEvents = new();
+    private readonly OldInteropEvent<WheelEvent> _wheelEvent = new();
+    private readonly Dictionary<MouseEventEnum, OldInteropEvent<MouseEvent>> _mouseEvents = new();
+    private readonly Dictionary<KeyboardEventEnum, OldInteropEvent<KeyboardEvent>> _keyboardEvents = new();
 
     public Action OnMouseDown(Action<MouseEvent> handle) => OnMouseEvent(MouseEventEnum.mousedown, handle);
     public Action OnMouseUp(Action<MouseEvent> handle) => OnMouseEvent(MouseEventEnum.mouseup, handle);
@@ -46,7 +46,7 @@ public partial record Element
     private Action OnMouseEvent(MouseEventEnum type, Action<MouseEvent> handle)
     {
         if (!_mouseEvents.TryGetValue(type, out var e))
-            e = _mouseEvents[type] = new InteropEvent<MouseEvent>();
+            e = _mouseEvents[type] = new OldInteropEvent<MouseEvent>();
 
         if (!e.HasListeners)
             e.SetCallbackId(Ctx.Invoke<int>("element.onMouseEvent", Id, type.ToString(), _ref, $"{nameof(Element)}.{nameof(HandleMouseEvent)}"));
@@ -69,7 +69,7 @@ public partial record Element
     private Action OnKeyboardEvent(KeyboardEventEnum type, Action<KeyboardEvent> handle, bool preventDefault)
     {
         if (!_keyboardEvents.TryGetValue(type, out var e))
-            e = _keyboardEvents[type] = new InteropEvent<KeyboardEvent>();
+            e = _keyboardEvents[type] = new OldInteropEvent<KeyboardEvent>();
 
         if (!e.HasListeners)
             e.SetCallbackId(Ctx.Invoke<int>(
