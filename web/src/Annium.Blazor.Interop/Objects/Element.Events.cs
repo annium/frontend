@@ -10,6 +10,7 @@ namespace Annium.Blazor.Interop;
 
 public partial record Element
 {
+    public IObservable<KeyboardEvent> KeyDown => _interopRef.EventProxy<KeyboardEvent>(KeyboardEventEnum.keydown);
     private readonly OldInteropEvent<WheelEvent> _wheelEvent = new();
     private readonly Dictionary<MouseEventEnum, OldInteropEvent<MouseEvent>> _mouseEvents = new();
     private readonly Dictionary<KeyboardEventEnum, OldInteropEvent<KeyboardEvent>> _keyboardEvents = new();
@@ -73,13 +74,14 @@ public partial record Element
 
         if (!e.HasListeners)
             e.SetCallbackId(Ctx.Invoke<int>(
-                "element.onKeyboardEvent",
-                Id,
-                type.ToString(),
-                _ref,
-                $"{nameof(Element)}.{nameof(HandleKeyboardEvent)}",
-                preventDefault
-            ));
+                    "element.onKeyboardEvent",
+                    Id,
+                    type.ToString(),
+                    _ref,
+                    $"{nameof(Element)}.{nameof(HandleKeyboardEvent)}",
+                    preventDefault
+                )
+            );
 
         e.Event += handle;
 
@@ -107,7 +109,14 @@ public partial record Element
     }
 
     [JSInvokable($"{nameof(Element)}.{nameof(HandleKeyboardEvent)}")]
-    public void HandleKeyboardEvent(string typeName, string key, string code, bool metaKey, bool ctrlKey, bool altKey, bool shiftKey)
+    public void HandleKeyboardEvent(string typeName,
+        string key,
+        string code,
+        bool metaKey,
+        bool ctrlKey,
+        bool altKey,
+        bool shiftKey
+    )
     {
         var type = typeName.ParseEnum<KeyboardEventEnum>();
         if (!_keyboardEvents.TryGetValue(type, out var e))

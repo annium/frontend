@@ -1,21 +1,24 @@
 using System;
 using System.Threading.Tasks;
+using Annium.Blazor.Interop.Internal;
 using Annium.Blazor.Interop.Internal.Extensions;
 using Annium.Core.Primitives;
 using Microsoft.JSInterop;
 
 namespace Annium.Blazor.Interop;
 
-public abstract partial record Element : IAsyncDisposable
+public abstract partial record Element : IObject, IAsyncDisposable
 {
     protected IInteropContext Ctx => InteropContext.Instance;
-    protected abstract string Id { get; }
+    public abstract string Id { get; }
     private readonly DotNetObjectReference<Element> _ref;
+    private readonly InteropObjectReference _interopRef;
     private readonly AsyncDisposableBox _disposable = Disposable.AsyncBox();
 
     protected Element()
     {
         _disposable += _ref = DotNetObjectReference.Create(this);
+        _disposable += _interopRef = new InteropObjectReference(this);
     }
 
     public string Style

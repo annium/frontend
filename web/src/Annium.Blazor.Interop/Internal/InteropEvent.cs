@@ -1,27 +1,51 @@
 using System;
+using Annium.Blazor.Interop.Internal.Extensions;
+using Annium.Core.Primitives;
+using Microsoft.JSInterop;
 
 namespace Annium.Blazor.Interop.Internal;
 
-internal sealed record InteropEvent<T>
+internal sealed record InteropEvent<TS, TE> : IObservable<TE>
+    where TS : class
 {
-    public event Action<T> Event = delegate { };
-    public bool HasListeners => Event.GetInvocationList().Length > 1;
-    public void Handle(T x) => Event(x);
-    public int? CallbackId { get; private set; }
+    private static readonly IInteropContext Ctx = InteropContext.Instance;
 
-    public void SetCallbackId(int cid)
+    private bool _hasListeners;
+    private int _callbackId;
+    private readonly IObject _el;
+    private readonly string _eventKey;
+    private readonly DotNetObjectReference<TS> _objectRef;
+    private readonly string _callbackName;
+
+    public InteropEvent(IObject el,
+        string eventKey,
+        DotNetObjectReference<TS> objectRef,
+        string callbackName
+    )
     {
-        if (CallbackId.HasValue)
-            throw new InvalidOperationException("Callback id is already set");
-
-        CallbackId = cid;
+        _el = el;
+        _eventKey = eventKey;§§
+        _objectRef = objectRef;
+        _callbackName = callbackName;
     }
 
-    public void ResetCallbackId()
+    public IDisposable Subscribe(IObserver<TE> observer)
     {
-        if (!CallbackId.HasValue)
-            throw new InvalidOperationException("Callback id is already reset");
+        if (!_hasListeners)
+            _callbackId = Ctx.Invoke<int>($"element.on{typeof(TE).Name}", _el.Id, _objectRef, _callbackName);
 
-        CallbackId = null;
+        _wheelEvent.Event += handle;
+
+        return Disposable.Create(() =>
+            {
+                _wheelEvent.Event -= handle;
+
+                if (_wheelEvent.HasListeners)
+                    return;
+
+                Ctx.InvokeVoid("element.offWheelEvent", Id, _wheelEvent.CallbackId);
+                _wheelEvent.ResetCallbackId();
+            }
+        );
     }
 }
