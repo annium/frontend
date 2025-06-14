@@ -48,17 +48,17 @@ jobs:
       - name: Pack
         run: make pack buildNumber=${{ steps.get_version.outputs.patch }}
 
-      - name: Build Documentation
-        run: make docs-build
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '_site'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+#      - name: Build Documentation
+#        run: make docs-build
+#
+#      - name: Upload Pages artifact
+#        uses: actions/upload-pages-artifact@v3
+#        with:
+#          path: '_site'
+#
+#      - name: Deploy to GitHub Pages
+#        id: deployment
+#        uses: actions/deploy-pages@v4
 
       - name: Publish NuGet packages
         run: make publish apiKey=${{ secrets.NUGET_API_KEY }}
