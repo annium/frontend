@@ -1,0 +1,42 @@
+- name: Home
+  href: index.md
+- name: API Reference
+  items:
+    - name: Blazor Components
+      href: api/web/Annium.Blazor.Core/Annium.Blazor.Core.yml
+      items:
+        - name: Core Components
+          items:
+            - name: Annium.Blazor.Core
+              href: api/web/Annium.Blazor.Core/Annium.Blazor.Core.yml
+            - name: Annium.Blazor.Css
+              href: api/web/Annium.Blazor.Css/Annium.Blazor.Css.yml
+            - name: Annium.Blazor.Interop
+              href: api/web/Annium.Blazor.Interop/Annium.Blazor.Interop.yml
+        - name: UI Component Libraries
+          href: api/web/Annium.Blazor.Ant/Annium.Blazor.Ant.yml
+          items:
+            - name: Annium.Blazor.Ant
+              href: api/web/Annium.Blazor.Ant/Annium.Blazor.Ant.yml
+            - name: Annium.Blazor.MatBlazor
+              href: api/web/Annium.Blazor.MatBlazor/Annium.Blazor.MatBlazor.yml
+        - name: Advanced Components
+          href: api/web/Annium.Blazor.State/Annium.Blazor.State.yml
+          items:
+            - name: Annium.Blazor.Charts
+              href: api/web/Annium.Blazor.Charts/Annium.Blazor.Charts.yml
+            - name: Annium.Blazor.Net
+              href: api/web/Annium.Blazor.Net/Annium.Blazor.Net.yml
+            - name: Annium.Blazor.Routing
+              href: api/web/Annium.Blazor.Routing/Annium.Blazor.Routing.yml
+            - name: Annium.Blazor.State
+              href: api/web/Annium.Blazor.State/Annium.Blazor.State.yml
+    - name: State Management
+      href: api/shared/Annium.Components.State.Core/Annium.Components.State.Core.yml
+      items:
+        - name: Annium.Components.State.Core
+          href: api/shared/Annium.Components.State.Core/Annium.Components.State.Core.yml
+        - name: Annium.Components.State.Forms
+          href: api/shared/Annium.Components.State.Forms/Annium.Components.State.Forms.yml
+        - name: Annium.Components.State.Operations
+          href: api/shared/Annium.Components.State.Operations/Annium.Components.State.Operations.yml
