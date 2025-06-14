@@ -6,8 +6,16 @@ using Demo.Blazor.Charts.Domain.Converters;
 
 namespace Demo.Blazor.Charts;
 
+/// <summary>
+/// Service pack for the Demo.Blazor.Charts application, configuring core services, charts, and custom JSON converters
+/// </summary>
 public class ServicePack : ServicePackBase
 {
+    /// <summary>
+    /// Registers all required services for the Blazor Charts demo application
+    /// </summary>
+    /// <param name="container">The service container to register services with</param>
+    /// <param name="provider">The service provider for accessing already registered services</param>
     public override void Register(IServiceContainer container, IServiceProvider provider)
     {
         // core
@@ -32,6 +40,10 @@ public class ServicePack : ServicePackBase
         container.AddAntDesign();
     }
 
+    /// <summary>
+    /// Sets up logging configuration for the application
+    /// </summary>
+    /// <param name="provider">The service provider to configure</param>
     public override void Setup(IServiceProvider provider)
     {
         provider.UseLogging(route =>
