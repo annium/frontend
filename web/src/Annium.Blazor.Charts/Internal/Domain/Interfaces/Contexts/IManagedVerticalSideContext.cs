@@ -14,7 +14,7 @@ internal interface IManagedVerticalSideContext : IVerticalSideContext
     /// <param name="canvas">The main canvas element</param>
     /// <param name="overlay">The overlay canvas element</param>
     void Init(Canvas canvas, Canvas overlay);
-    
+
     /// <summary>
     /// Sets the rectangular bounds of the vertical side
     /// </summary>

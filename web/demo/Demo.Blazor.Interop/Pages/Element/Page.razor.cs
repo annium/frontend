@@ -27,18 +27,22 @@ public partial class Page : ILogSubject, IDisposable
     /// The div element that handles mouse events.
     /// </summary>
     private Div _eventsBlock = null!;
+
     /// <summary>
     /// The div element that handles resize events.
     /// </summary>
     private Div _resizedBlock = null!;
+
     /// <summary>
     /// The input element that handles keyboard events.
     /// </summary>
     private Input _input = null!;
+
     /// <summary>
     /// Indicates whether the resized block is currently in its enlarged state.
     /// </summary>
     private bool _isResized;
+
     /// <summary>
     /// Container for disposable event subscriptions.
     /// </summary>

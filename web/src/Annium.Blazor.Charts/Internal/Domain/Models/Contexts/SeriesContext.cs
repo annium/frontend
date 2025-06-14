@@ -14,14 +14,17 @@ internal sealed record SeriesContext : IManagedSeriesContext
     /// Gets the main canvas for rendering series data.
     /// </summary>
     public Canvas Canvas { get; private set; } = null!;
+
     /// <summary>
     /// Gets the overlay canvas for rendering interactive series elements.
     /// </summary>
     public Canvas Overlay { get; private set; } = null!;
+
     /// <summary>
     /// Gets the DOM rectangle representing the series area's bounds.
     /// </summary>
     public DomRect Rect { get; private set; }
+
     /// <summary>
     /// Flag indicating whether the context has been initiated.
     /// </summary>

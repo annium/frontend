@@ -14,31 +14,31 @@ internal interface IManagedChartContext : IChartContext
     /// Gets the rectangular bounds of the chart
     /// </summary>
     DomRect Rect { get; }
-    
+
     /// <summary>
     /// Sets the rectangular bounds of the chart
     /// </summary>
     /// <param name="rect">The rectangular bounds to set</param>
     void SetRect(DomRect rect);
-    
+
     /// <summary>
     /// Updates the chart context
     /// </summary>
     void Update();
-    
+
     /// <summary>
     /// Sets the lookup information for the chart
     /// </summary>
     /// <param name="moment">The instant moment for lookup</param>
     /// <param name="point">The point for lookup</param>
     void SetLookup(Instant? moment, Point? point);
-    
+
     /// <summary>
     /// Attempts to draw the chart
     /// </summary>
     /// <returns>True if drawing was successful, false otherwise</returns>
     bool TryDraw();
-    
+
     /// <summary>
     /// Attempts to get the overlay point
     /// </summary>

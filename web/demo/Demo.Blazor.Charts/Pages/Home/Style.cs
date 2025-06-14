@@ -24,7 +24,7 @@ public class Style : RuleSet
     /// Resolution selector positioned at top-right corner
     /// </summary>
     public readonly CssRule Resolution = Rule.Class().HeightPx(20).RightRem(1).TopRem(1);
-    
+
     /// <summary>
     /// Zoom control positioned at bottom-right corner
     /// </summary>

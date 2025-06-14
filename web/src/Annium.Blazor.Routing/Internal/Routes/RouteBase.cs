@@ -13,12 +13,12 @@ internal abstract class RouteBase : IRouteBase
     /// Gets the route template pattern used for matching.
     /// </summary>
     public string Template { get; }
-    
+
     /// <summary>
     /// Gets the page component type associated with this route.
     /// </summary>
     public Type PageType { get; }
-    
+
     /// <summary>
     /// Gets the navigation manager used for navigation operations.
     /// </summary>

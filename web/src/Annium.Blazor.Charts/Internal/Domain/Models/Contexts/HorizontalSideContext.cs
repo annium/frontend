@@ -14,14 +14,17 @@ internal sealed record HorizontalSideContext : IManagedHorizontalSideContext
     /// Gets the main canvas for rendering horizontal side content.
     /// </summary>
     public Canvas Canvas { get; private set; } = null!;
+
     /// <summary>
     /// Gets the overlay canvas for rendering interactive horizontal side elements.
     /// </summary>
     public Canvas Overlay { get; private set; } = null!;
+
     /// <summary>
     /// Gets the DOM rectangle representing the horizontal side's bounds.
     /// </summary>
     public DomRect Rect { get; private set; }
+
     /// <summary>
     /// Flag indicating whether the context has been initiated.
     /// </summary>

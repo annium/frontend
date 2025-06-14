@@ -20,37 +20,37 @@ internal class Route<TData> : RouteBase, IRoute<TData>
     /// Default instance of the data type for parameter comparison.
     /// </summary>
     private readonly TData _default = new();
-    
+
     /// <summary>
     /// Default parameter values for comparison.
     /// </summary>
     private readonly IReadOnlyDictionary<string, object?> _defaultParameters;
-    
+
     /// <summary>
     /// Mapper for data transformations.
     /// </summary>
     private readonly IMapper _mapper;
-    
+
     /// <summary>
     /// Location path handler for this route.
     /// </summary>
     private readonly ILocationPath _path;
-    
+
     /// <summary>
     /// Location query handler for this route.
     /// </summary>
     private readonly ILocationQuery _query;
-    
+
     /// <summary>
     /// Data model for the complete data type.
     /// </summary>
     private readonly IDataModel _model;
-    
+
     /// <summary>
     /// Data model for path-related properties.
     /// </summary>
     private readonly IDataModel _pathModel;
-    
+
     /// <summary>
     /// Data model for query-related properties.
     /// </summary>

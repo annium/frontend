@@ -29,6 +29,7 @@ internal sealed record RawLocation
     /// Gets the path segments extracted from the URI
     /// </summary>
     public IReadOnlyList<string> Segments { get; }
+
     /// <summary>
     /// Gets the query parameters extracted from the URI
     /// </summary>

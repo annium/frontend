@@ -12,12 +12,12 @@ internal interface IRouteBase
     /// Gets the route template pattern used for matching.
     /// </summary>
     string Template { get; }
-    
+
     /// <summary>
     /// Gets the page component type associated with this route.
     /// </summary>
     Type PageType { get; }
-    
+
     /// <summary>
     /// Attempts to match a raw location against this route.
     /// </summary>

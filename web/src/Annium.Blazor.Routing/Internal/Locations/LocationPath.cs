@@ -58,6 +58,7 @@ internal class LocationPath : ILocationPath
     /// The collection of location segments that make up this path
     /// </summary>
     private readonly IReadOnlyList<ILocationSegment> _segments;
+
     /// <summary>
     /// Mapper instance used for type conversions during matching and link generation
     /// </summary>

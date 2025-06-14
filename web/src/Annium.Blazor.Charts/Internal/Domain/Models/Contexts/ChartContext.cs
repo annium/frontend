@@ -22,50 +22,62 @@ internal sealed record ChartContext : IManagedChartContext, ILogSubject
     /// Gets the logger instance for this chart context.
     /// </summary>
     public ILogger Logger { get; }
+
     /// <summary>
     /// Event raised when the chart context is updated.
     /// </summary>
     public event Action Updated = delegate { };
+
     /// <summary>
     /// Event raised when the lookup position changes.
     /// </summary>
     public event Action<Instant?, Point?> LookupChanged = delegate { };
+
     /// <summary>
     /// Gets the current moment in time for the chart.
     /// </summary>
     public Instant Moment { get; private set; }
+
     /// <summary>
     /// Gets the current zoom level.
     /// </summary>
     public int Zoom { get; private set; }
+
     /// <summary>
     /// Gets the available zoom levels.
     /// </summary>
     public IReadOnlyList<int> Zooms => _zooms;
+
     /// <summary>
     /// Gets the current time resolution for the chart.
     /// </summary>
     public Duration Resolution { get; private set; }
+
     /// <summary>
     /// Gets the number of pixels per resolution unit.
     /// </summary>
     public int PxPerResolution { get; private set; }
+
     /// <summary>
     /// Gets the available time resolutions.
     /// </summary>
     public IReadOnlyList<Duration> Resolutions => _resolutions;
+
     /// <summary>
     /// Gets a value indicating whether the chart is locked (any pane is locked).
     /// </summary>
     public bool IsLocked => _panes.Any(x => x.IsLocked);
+
     /// <summary>
     /// Gets the number of milliseconds per pixel.
     /// </summary>
     public int MsPerPx { get; private set; }
+
     /// <summary>
     /// Gets the time zone used by the chart.
     /// </summary>
     public DateTimeZone TimeZone { get; } = DateTimeZoneProviders.Tzdb.GetSystemDefault();
+
     /// <summary>
     /// Gets the time zone offset in minutes from UTC.
     /// </summary>
@@ -75,18 +87,22 @@ internal sealed record ChartContext : IManagedChartContext, ILogSubject
             .GetUtcOffset(NodaConstants.UnixEpoch)
             .ToTimeSpan()
             .TotalMinutes.FloorInt32();
+
     /// <summary>
     /// Gets the time bounds of all data in the chart.
     /// </summary>
     public ValueRange<Instant> Bounds => _bounds;
+
     /// <summary>
     /// Gets the currently visible time range.
     /// </summary>
     public ValueRange<Instant> View => _view;
+
     /// <summary>
     /// Gets the collection of pane contexts registered with this chart.
     /// </summary>
     public IReadOnlyCollection<IPaneContext> Panes => _panes;
+
     /// <summary>
     /// Gets the DOM rectangle representing the chart's bounds.
     /// </summary>
@@ -96,26 +112,32 @@ internal sealed record ChartContext : IManagedChartContext, ILogSubject
     /// The available zoom levels.
     /// </summary>
     private List<int> _zooms = [1];
+
     /// <summary>
     /// The available time resolutions.
     /// </summary>
     private List<Duration> _resolutions = [Duration.FromMinutes(1)];
+
     /// <summary>
     /// The collection of registered pane contexts.
     /// </summary>
     private readonly List<IPaneContext> _panes = [];
+
     /// <summary>
     /// The managed time bounds of all data in the chart.
     /// </summary>
     private readonly ManagedValueRange<Instant> _bounds = ValueRange.Create(FutureBound, PastBound);
+
     /// <summary>
     /// The managed currently visible time range.
     /// </summary>
     private readonly ManagedValueRange<Instant> _view = ValueRange.Create(FutureBound, PastBound);
+
     /// <summary>
     /// Flag indicating whether the canvas needs to be redrawn.
     /// </summary>
     private int _isCanvasDirty = 1;
+
     /// <summary>
     /// The current overlay request state containing point and request flag.
     /// </summary>

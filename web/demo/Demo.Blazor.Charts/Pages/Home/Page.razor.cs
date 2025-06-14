@@ -47,18 +47,22 @@ public partial class Page
     /// The series source for candle data.
     /// </summary>
     private ISeriesSource<ICandle> _candleSeries = null!;
+
     /// <summary>
     /// The series source for open price points.
     /// </summary>
     private ISeriesSource<PointValue> _openSeries = null!;
+
     /// <summary>
     /// The series source for multi-range data.
     /// </summary>
     private ISeriesSource<MultiValue<RangeItem>> _multiRangeSeries = null!;
+
     /// <summary>
     /// The series source for multi-line point data.
     /// </summary>
     private ISeriesSource<MultiValue<LinePointItem>> _multiLineSeries = null!;
+
     /// <summary>
     /// Function delegate for generating candle label text.
     /// </summary>
@@ -66,6 +70,7 @@ public partial class Page
     {
         return string.Empty;
     };
+
     /// <summary>
     /// Function delegate for generating range label text.
     /// </summary>
@@ -73,6 +78,7 @@ public partial class Page
     {
         return string.Empty;
     };
+
     /// <summary>
     /// Function delegate for calculating the left position of range labels.
     /// </summary>
@@ -80,6 +86,7 @@ public partial class Page
     {
         return 0;
     };
+
     /// <summary>
     /// Function delegate for calculating the top position of range labels.
     /// </summary>
@@ -87,6 +94,7 @@ public partial class Page
     {
         return 0;
     };
+
     /// <summary>
     /// Function delegate for generating line point label text.
     /// </summary>
@@ -94,6 +102,7 @@ public partial class Page
     {
         return string.Empty;
     };
+
     /// <summary>
     /// Function delegate for calculating the left position of line labels.
     /// </summary>
@@ -101,6 +110,7 @@ public partial class Page
     {
         return 0;
     };
+
     /// <summary>
     /// Function delegate for calculating the top position of line labels.
     /// </summary>

@@ -26,6 +26,7 @@ internal class LocationQuery : ILocationQuery
     /// Dictionary of property names to PropertyInfo for quick lookup during matching
     /// </summary>
     private readonly IReadOnlyDictionary<string, PropertyInfo> _properties;
+
     /// <summary>
     /// Mapper instance used for type conversions during query parameter matching
     /// </summary>

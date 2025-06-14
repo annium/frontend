@@ -23,70 +23,87 @@ internal sealed record PaneContext(ILogger Logger) : IManagedPaneContext, ILogSu
     /// Event raised when the bounds of the pane change.
     /// </summary>
     public event Action<ValueRange<Instant>> OnBoundsChange = delegate { };
+
     /// <summary>
     /// Gets the parent chart context.
     /// </summary>
     public IChartContext Chart { get; private set; } = null!;
+
     /// <summary>
     /// Gets the collection of data sources registered with this pane.
     /// </summary>
     public IReadOnlyCollection<ISeriesSource> Sources => _sources;
+
     /// <summary>
     /// Gets the series context for rendering series data.
     /// </summary>
     public ISeriesContext? Series { get; private set; }
+
     /// <summary>
     /// Gets or sets the bottom horizontal side context.
     /// </summary>
     public IHorizontalSideContext? Bottom { get; set; }
+
     /// <summary>
     /// Gets or sets the right vertical side context.
     /// </summary>
     public IVerticalSideContext? Right { get; set; }
+
     /// <summary>
     /// Gets the DOM rectangle representing the pane's bounds.
     /// </summary>
     public DomRect Rect { get; private set; }
+
     /// <summary>
     /// Gets the number of data units per pixel for vertical scaling.
     /// </summary>
     public decimal DotPerPx { get; private set; }
+
     /// <summary>
     /// Gets a value indicating whether the pane is locked (any source is loading).
     /// </summary>
     public bool IsLocked => _sources.Any(x => x.IsLoading);
+
     /// <summary>
     /// Gets the time bounds of all data in the pane.
     /// </summary>
     public ValueRange<Instant> Bounds => _bounds;
+
     /// <summary>
     /// Gets the value range of all data in the pane.
     /// </summary>
     public ValueRange<decimal> Range => _range;
+
     /// <summary>
     /// Gets the currently visible value range with padding.
     /// </summary>
     public ValueRange<decimal> View => _view;
+
     /// <summary>
     /// The managed time bounds of all data in the pane.
     /// </summary>
     private readonly ManagedValueRange<Instant> _bounds = ValueRange.Create(FutureBound, PastBound);
+
     /// <summary>
     /// The managed value range of all data in the pane.
     /// </summary>
     private readonly ManagedValueRange<decimal> _range = ValueRange.Create(decimal.MinValue, decimal.MaxValue);
+
     /// <summary>
     /// The managed currently visible value range with padding.
     /// </summary>
     private readonly ManagedValueRange<decimal> _view = ValueRange.Create(decimal.MinValue, decimal.MaxValue);
+
     /// <summary>
     /// The collection of registered data sources.
     /// </summary>
     private readonly List<ISeriesSource> _sources = new();
+
     /// <summary>
     /// The dictionary mapping sources to their individual value ranges.
     /// </summary>
     private readonly Dictionary<ISeriesSource, ManagedValueRange<decimal>> _sourceRanges = new();
+
     /// <summary>
     /// Flag indicating whether the context has been initiated.
     /// </summary>

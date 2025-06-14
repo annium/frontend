@@ -13,7 +13,7 @@ internal interface IManagedPaneContext : IPaneContext
     /// </summary>
     /// <param name="chart">The chart context to initialize with</param>
     void Init(IChartContext chart);
-    
+
     /// <summary>
     /// Sets the rectangular bounds of the pane
     /// </summary>

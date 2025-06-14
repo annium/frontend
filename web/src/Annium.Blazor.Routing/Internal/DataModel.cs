@@ -41,12 +41,12 @@ internal class DataModel : IDataModel
     /// The type this data model represents.
     /// </summary>
     private readonly Type _type;
-    
+
     /// <summary>
     /// Dictionary of property names (camelCase) to PropertyInfo objects.
     /// </summary>
     private readonly IReadOnlyDictionary<string, PropertyInfo> _properties;
-    
+
     /// <summary>
     /// The mapper used for type conversions.
     /// </summary>

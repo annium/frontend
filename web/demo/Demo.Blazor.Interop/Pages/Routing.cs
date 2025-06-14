@@ -12,6 +12,7 @@ public class Routing : IRouting
     /// Gets the route for the Canvas demo page.
     /// </summary>
     public IRoute Canvas { get; }
+
     /// <summary>
     /// Gets the route for the Element demo page.
     /// </summary>

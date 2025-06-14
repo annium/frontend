@@ -14,14 +14,17 @@ internal sealed record VerticalSideContext : IManagedVerticalSideContext
     /// Gets the main canvas for rendering vertical side content.
     /// </summary>
     public Canvas Canvas { get; private set; } = null!;
+
     /// <summary>
     /// Gets the overlay canvas for rendering interactive vertical side elements.
     /// </summary>
     public Canvas Overlay { get; private set; } = null!;
+
     /// <summary>
     /// Gets the DOM rectangle representing the vertical side's bounds.
     /// </summary>
     public DomRect Rect { get; private set; }
+
     /// <summary>
     /// Flag indicating whether the context has been initiated.
     /// </summary>
