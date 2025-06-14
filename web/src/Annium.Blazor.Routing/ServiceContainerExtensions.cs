@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Annium.Blazor.Routing;
 using Annium.Blazor.Routing.Internal;
+using Annium.Core.Runtime;
 
 [assembly: InternalsVisibleTo("Annium.Blazor.Routing.Tests")]
 

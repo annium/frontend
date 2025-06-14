@@ -1,5 +1,6 @@
 using Annium.Blazor.Net;
 using Annium.Blazor.Net.Internal;
+using Annium.Core.Runtime;
 
 // ReSharper disable once CheckNamespace
 namespace Annium.Core.DependencyInjection;
