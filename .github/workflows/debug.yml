@@ -1,0 +1,40 @@
+name: Merge Request
+
+on:
+  push:
+    branches:
+      - debug
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Setup
+        run: make setup
+
+      - name: Build
+        run: make build
+
+      - name: Pack
+        run: |
+          make pack buildNumber=${{ steps.get_version.outputs.patch }}
+          dotnet tool run xs dotnet nuget list-contents Annium.Blazor.Interop.1.1.0.nupkg

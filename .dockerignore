@@ -1,0 +1,43 @@
+# editors
+.idea/
+*.DotSettings*
+
+# artifacts
+*.log
+*.nupkg
+*.trx
+
+# docs
+/api/
+/_site/
+
+# xs ignore patterns
+.xs.ignore
+.xs.credentials
+lcov.info
+
+# build outputs
+**/bin/
+**/obj/
+**/dist/
+
+# JavaScript artifacts
+**/wwwroot/**/*.js
+**/wwwroot/**/*.js.map
+
+# Git
+.gitignore
+
+# Docker
+Dockerfile*
+.dockerignore
+
+# Development
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

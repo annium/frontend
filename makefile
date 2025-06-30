@@ -21,11 +21,18 @@ buildNumber?=0
 build:
 	dotnet build -c Release --nologo -p:BuildNumber=$(buildNumber)
 
+build-debug:
+	dotnet build web/src/Annium.Blazor.Interop/Annium.Blazor.Interop.csproj -c Release --nologo -p:BuildNumber=$(buildNumber) -v diag
+
 test:
 	dotnet test -c Release --no-build --nologo --logger "trx;LogFilePrefix=test-results.trx"
 
 pack:
 	dotnet pack --no-build -o . -c Release -p:SymbolPackageFormat=snupkg
+
+pack-debug:
+	dotnet pack web/src/Annium.Blazor.Interop/Annium.Blazor.Interop.csproj --no-build -o . -c Release -p:SymbolPackageFormat=snupkg -v diag
+	dotnet tool run xs dotnet nuget list-contents Annium.Blazor.Interop.1.1.0.nupkg
 
 publish:
 	dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key $(apiKey)
@@ -51,7 +58,7 @@ docs-watch:
 
 gen-rsa-keys:
 	openssl req -x509 -noenc -days 3650 -keyout private.pem -out cert.pem
-	openssl rsa -in private.pem -pubout -out public.pem 
+	openssl rsa -in private.pem -pubout -out public.pem
 	openssl pkcs12 -export -inkey private.pem -in cert.pem -out cert.pfx
 	rm cert.pem
 

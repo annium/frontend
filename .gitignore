@@ -6,6 +6,7 @@
 *.log
 *.nupkg
 *.trx
+/debug/
 
 # docs
 /api/
