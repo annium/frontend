@@ -17,7 +17,7 @@ Annium.Frontend is a comprehensive Blazor component library framework targeting 
 ### UI Component Libraries
 
 - **[Annium.Blazor.Ant](api/web/Annium.Blazor.Ant/Annium.Blazor.Ant.yml)** - Ant Design component wrappers and integrations
-- **[Annium.Blazor.MatBlazor](api/web/Annium.Blazor.MatBlazor/Annium.Blazor.MatBlazor.yml)** - Material Design component wrappers and theming
+- **[Annium.Blazor.MatBlazor](api/web/Annium.Blazor.MatBlazor/Annium.Blazor.MatBlazor.Components.yml)** - Material Design component wrappers and theming
 
 ### Advanced Components
 

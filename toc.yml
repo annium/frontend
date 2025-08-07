@@ -19,7 +19,7 @@
             - name: Annium.Blazor.Ant
               href: api/web/Annium.Blazor.Ant/Annium.Blazor.Ant.yml
             - name: Annium.Blazor.MatBlazor
-              href: api/web/Annium.Blazor.MatBlazor/Annium.Blazor.MatBlazor.yml
+              href: api/web/Annium.Blazor.MatBlazor/Annium.Blazor.MatBlazor.Components.yml
         - name: Advanced Components
           href: api/web/Annium.Blazor.State/Annium.Blazor.State.yml
           items:
