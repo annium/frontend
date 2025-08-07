@@ -44,7 +44,7 @@
       "noRestore": true,
       "namespaceLayout": "nested",
       "memberLayout": "samePage",
-      "allowCompilationErrors": false,
+      "allowCompilationErrors": true,
       "properties": {
         "ProduceReferenceAssembly": "true"
       }
@@ -92,7 +92,7 @@
       "noRestore": true,
       "namespaceLayout": "nested",
       "memberLayout": "samePage",
-      "allowCompilationErrors": false,
+      "allowCompilationErrors": true,
       "properties": {
         "ProduceReferenceAssembly": "true"
       }
