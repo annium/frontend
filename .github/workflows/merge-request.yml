@@ -45,13 +45,7 @@ jobs:
         run: make format
 
       - name: Check for uncommitted changes
-        run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
-            echo "::error::Code formatting check failed. Please run 'make format' locally and commit the changes."
-            git status
-            git diff
-            exit 1
-          fi
+        run: make ensure-no-changes
 
       - name: Lint docs
         if: ${{ needs.init.outputs.run_ci == 'true' }}

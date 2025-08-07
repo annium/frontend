@@ -9,6 +9,13 @@ format-full: format
 	dotnet format style
 	dotnet format analyzers
 
+ensure-no-changes:
+	@if [[ -n "$$(git status --porcelain)" ]]; then \
+		echo "Changes detected:"; \
+		git status; \
+		git --no-pager diff --no-color --exit-code; \
+	fi
+
 update:
 	dotnet tool list --format json | jq -r '.data[] | "\(.packageId)"' | xargs -I% dotnet tool install %
 	dotnet tool run xs update all dotnet -sc -ic
