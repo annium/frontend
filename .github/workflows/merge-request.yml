@@ -53,9 +53,9 @@ jobs:
             exit 1
           fi
 
-#      - name: Lint docs
-#        if: ${{ needs.init.outputs.run_ci == 'true' }}
-#        run: make docs-lint
+      - name: Lint docs
+        if: ${{ needs.init.outputs.run_ci == 'true' }}
+        run: make docs-lint
 
       - name: Build
         run: make build
@@ -72,9 +72,9 @@ jobs:
           path: '**/*.trx'
           retention-days: 30
 
-#      - name: Build Documentation
-#        if: ${{ needs.init.outputs.run_ci == 'true' }}
-#        run: make docs-build
+      - name: Build Documentation
+        if: ${{ needs.init.outputs.run_ci == 'true' }}
+        run: make docs-build
 
   report:
     runs-on: ubuntu-latest
