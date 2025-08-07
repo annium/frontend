@@ -66,20 +66,20 @@ jobs:
         if: ${{ needs.init.outputs.run_ci == 'true' }}
         run: make pack buildNumber=${{ steps.get_version.outputs.patch }}
 
-#      - name: Build Documentation
-#        if: ${{ needs.init.outputs.run_ci == 'true' }}
-#        run: make docs-build
-#
-#      - name: Upload Pages artifact
-#        uses: actions/upload-pages-artifact@v3
-#        if: ${{ needs.init.outputs.run_ci == 'true' }}
-#        with:
-#          path: '_site'
-#
-#      - name: Deploy to GitHub Pages
-#        id: deployment
-#        if: ${{ needs.init.outputs.run_ci == 'true' }}
-#        uses: actions/deploy-pages@v4
+      - name: Build Documentation
+        if: ${{ needs.init.outputs.run_ci == 'true' }}
+        run: make docs-build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        if: ${{ needs.init.outputs.run_ci == 'true' }}
+        with:
+          path: '_site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        if: ${{ needs.init.outputs.run_ci == 'true' }}
+        uses: actions/deploy-pages@v4
 
       - name: Publish NuGet packages
         if: ${{ needs.init.outputs.run_ci == 'true' }}
