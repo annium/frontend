@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Annium;
 using Annium.Blazor.Routing.Internal.Locations.Segments;
 using Annium.Core.Mapper;
 
@@ -129,7 +130,7 @@ internal class LocationPath : ILocationPath
                     return fs.Part;
                 if (x is ParamLocationSegment ps)
                     if (parameters.TryGetValue(ps.Name, out var value))
-                        return _mapper.Map<string>(value);
+                        return _mapper.Map<string>(value.NotNull());
                     else
                         throw new ArgumentException($"Path requires parameter '{ps.Name}'");
 

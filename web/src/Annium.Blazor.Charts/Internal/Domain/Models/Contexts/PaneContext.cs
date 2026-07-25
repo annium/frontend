@@ -303,7 +303,7 @@ internal sealed record PaneContext(ILogger Logger) : IManagedPaneContext, ILogSu
     /// </summary>
     private void ResetRangeAndView()
     {
-        this.Trace(string.Empty);
+        this.Trace("");
         _range.Set(0m, 0m);
         _view.Set(0m, 0m);
         UpdateDotPerPx();

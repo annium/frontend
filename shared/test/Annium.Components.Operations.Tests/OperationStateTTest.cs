@@ -70,7 +70,7 @@ public class OperationStateTTest : TestBase
     {
         // arrange
         var (op, getChanges) = Arrange(OperationState.New<int>);
-        var failure = Result.New(7).Error("bad").Error("field", "field is empty");
+        var failure = Result.Create(7).Error("bad").Error("field", "field is empty");
 
         // act
         op.Start();
@@ -96,7 +96,7 @@ public class OperationStateTTest : TestBase
     {
         // arrange
         var (op, getChanges) = Arrange(OperationState.New<int>);
-        var failure = Result.New().Error("bad").Error("field", "field is empty");
+        var failure = Result.Create().Error("bad").Error("field", "field is empty");
 
         // act
         op.Start();

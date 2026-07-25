@@ -128,7 +128,7 @@ public static class ObjectContainerValidationExtensions
         }
         catch (Exception exception)
         {
-            return Result.New().Error(exception.Message);
+            return Result.Create().Error(exception.Message);
         }
     }
 }

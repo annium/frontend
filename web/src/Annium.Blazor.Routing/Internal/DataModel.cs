@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Annium;
 using Annium.Core.Mapper;
 using Annium.Net.Base;
 using Annium.Reflection;
@@ -126,7 +127,8 @@ internal class DataModel : IDataModel
                 continue;
 
             var type = property.PropertyType;
-            parameters[name] = _mapper.Map(type.IsEnumerable() ? value.ToArray() : value.FirstOrDefault(), type);
+            object? source = type.IsEnumerable() ? value.ToArray() : value.FirstOrDefault();
+            parameters[name] = _mapper.Map(source.NotNull(), type);
         }
 
         return parameters;
