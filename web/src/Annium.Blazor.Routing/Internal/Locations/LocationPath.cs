@@ -17,7 +17,10 @@ internal class LocationPath : ILocationPath
     /// <summary>
     /// Regular expression for matching parameter placeholders in route templates
     /// </summary>
-    private static readonly Regex _paramRe = new(@"^\{([A-z0-9]+)\}$", RegexOptions.Compiled | RegexOptions.Singleline);
+    private static readonly Regex _paramRe = new(
+        @"^\{([A-Za-z0-9_]+)\}$",
+        RegexOptions.Compiled | RegexOptions.Singleline
+    );
 
     /// <summary>
     /// Parses a route template string and creates a LocationPath instance with associated property information
@@ -130,7 +133,8 @@ internal class LocationPath : ILocationPath
                     return fs.Part;
                 if (x is ParamLocationSegment ps)
                     if (parameters.TryGetValue(ps.Name, out var value))
-                        return _mapper.Map<string>(value.NotNull());
+                        // percent-encode so a value with '/', space or unicode stays a single path segment
+                        return Uri.EscapeDataString(_mapper.Map<string>(value.NotNull()));
                     else
                         throw new ArgumentException($"Path requires parameter '{ps.Name}'");
 
