@@ -253,15 +253,7 @@ internal class ObjectContainer<T> : ObservableState, IObjectContainer<T>, ILogSu
     private TX At<TX>(LambdaExpression ex)
         where TX : ITrackedState
     {
-        try
-        {
-            return (TX)_states[ResolveProperty(ex)].Ref;
-        }
-        catch (Exception e)
-        {
-            this.Error(e);
-            throw;
-        }
+        return this.ResolveOrLog(() => (TX)_states[ResolveProperty(ex)].Ref);
     }
 
     /// <summary>

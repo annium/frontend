@@ -62,25 +62,41 @@ public static class ObjectContainerValidationExtensions
     )
         where T : notnull, new()
     {
-        var cts = new CancellationTokenSource();
-        observable.Subscribe(_ =>
+        var holder = new CtsHolder();
+        observable.Subscribe(change =>
         {
-            cts.Cancel();
-            cts = new CancellationTokenSource();
-            state.Validate(validator, cts.Token);
+            // atomically swap in a fresh token source and cancel the previous run (Interlocked guards the
+            // reassign against overlapping notifications that could otherwise clobber each other's token).
+            var next = new CancellationTokenSource();
+            var previous = Interlocked.Exchange(ref holder.Cts, next);
+            previous.Cancel();
+            previous.Dispose();
+
+            // fire-and-forget: do NOT block the (single-threaded, UI-bound) Changed callback on an awaitable —
+            // that would deadlock a genuinely-async validator on Blazor WASM. ValidateAsync catches the
+            // validator itself, so the discarded task cannot fault unobserved.
+            _ = state.ValidateAsync(validator, next.Token);
         });
 
         return state;
     }
 
     /// <summary>
-    /// Performs validation on an object container and updates the status of child containers based on validation results.
+    /// Runs the validator against the container's value and updates child statuses. Sets children to
+    /// <see cref="Status.Validating"/> up front; on completion (unless cancelled) applies labeled errors to their
+    /// matching child and plain (unlabeled) errors — e.g. a thrown validator — to every child. A synchronous
+    /// validator completes inline; a genuinely-async one resolves later without blocking the caller.
     /// </summary>
     /// <typeparam name="T">The type of object being validated.</typeparam>
     /// <param name="state">The object container to validate.</param>
     /// <param name="validator">The validator to use for validation.</param>
-    /// <param name="ct">The cancellation token to check for cancellation requests.</param>
-    private static void Validate<T>(this IObjectContainer<T> state, IValidator<T> validator, CancellationToken ct)
+    /// <param name="ct">Cancellation token; if cancelled after the validator returns, the result is discarded.</param>
+    /// <returns>A task that completes when validation has been applied (or discarded on cancellation).</returns>
+    private static async Task ValidateAsync<T>(
+        this IObjectContainer<T> state,
+        IValidator<T> validator,
+        CancellationToken ct
+    )
         where T : notnull, new()
     {
         var children = state
@@ -93,42 +109,44 @@ public static class ObjectContainerValidationExtensions
                 child.SetStatus(Status.Validating);
         }
 
-#pragma warning disable VSTHRD002
-        var result = validator.GetValidationResultAsync(state).Result;
-#pragma warning restore VSTHRD002
+        IResult result;
+        try
+        {
+            result = await validator.ValidateAsync(state.Value);
+        }
+        catch (Exception exception)
+        {
+            result = Result.Create().Error(exception.Message);
+        }
+
         if (ct.IsCancellationRequested)
             return;
+
+        // plain (unlabeled) errors are not tied to a specific child, so apply them to every child rather than
+        // silently dropping them (a thrown validator surfaces as a plain error).
+        var plainMessage = result.PlainErrors.Count > 0 ? string.Join("; ", result.PlainErrors) : null;
 
         using (state.Mute())
         {
             foreach (var (name, child) in children)
                 if (result.LabeledErrors.TryGetValue(name, out var errors))
                     child.SetStatus(Status.Error, string.Join("; ", errors));
+                else if (plainMessage is not null)
+                    child.SetStatus(Status.Error, plainMessage);
                 else
                     child.SetStatus(Status.None);
         }
     }
 
     /// <summary>
-    /// Gets the validation result for an object container's value, handling any exceptions that occur during validation.
+    /// Mutable holder for the current validation cancellation source, enabling an atomic swap via
+    /// <see cref="Interlocked.Exchange{T}(ref T, T)"/> (a captured local cannot be passed by ref).
     /// </summary>
-    /// <typeparam name="T">The type of object being validated.</typeparam>
-    /// <param name="validator">The validator to use for validation.</param>
-    /// <param name="state">The object container containing the value to validate.</param>
-    /// <returns>A task representing the validation result.</returns>
-    private static async Task<IResult> GetValidationResultAsync<T>(
-        this IValidator<T> validator,
-        IObjectContainer<T> state
-    )
-        where T : notnull, new()
+    private sealed class CtsHolder
     {
-        try
-        {
-            return await validator.ValidateAsync(state.Value);
-        }
-        catch (Exception exception)
-        {
-            return Result.Create().Error(exception.Message);
-        }
+        /// <summary>
+        /// The cancellation source for the in-flight validation run; swapped atomically on each change.
+        /// </summary>
+        public CancellationTokenSource Cts = new();
     }
 }
