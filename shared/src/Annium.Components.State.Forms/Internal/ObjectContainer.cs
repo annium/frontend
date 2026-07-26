@@ -13,7 +13,7 @@ namespace Annium.Components.State.Forms.Internal;
 /// Automatically creates tracked state containers for each readable and writable property of type T.
 /// </summary>
 /// <typeparam name="T">The object type to be contained and tracked</typeparam>
-internal class ObjectContainer<T> : ObservableState, IObjectContainer<T>, ILogSubject
+internal class ObjectContainer<T> : ObservableState, IObjectContainer<T>, ILogSubject, INamedChildStates
     where T : notnull, new()
 {
     /// <summary>
@@ -57,6 +57,12 @@ internal class ObjectContainer<T> : ObservableState, IObjectContainer<T>, ILogSu
     /// </summary>
     public IReadOnlyDictionary<string, ITrackedState> Children =>
         _states.ToDictionary(x => x.Key.Name, x => x.Value.Ref);
+
+    /// <summary>
+    /// Gets the child states keyed by property name, for routing dotted-path validation errors into nested children.
+    /// </summary>
+    public IEnumerable<KeyValuePair<string, ITrackedState>> NamedChildren =>
+        _states.Select(x => new KeyValuePair<string, ITrackedState>(x.Key.Name, x.Value.Ref));
 
     /// <summary>
     /// Gets the logger instance for this container.

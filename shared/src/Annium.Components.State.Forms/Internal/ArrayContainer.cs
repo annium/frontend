@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -14,7 +15,7 @@ namespace Annium.Components.State.Forms.Internal;
 /// Represents a state container for managing arrays of items with change tracking, validation, and nested property access.
 /// </summary>
 /// <typeparam name="T">The type of items in the array, must be non-null and have a parameterless constructor.</typeparam>
-internal class ArrayContainer<T> : ObservableState, IArrayContainer<T>, ILogSubject
+internal class ArrayContainer<T> : ObservableState, IArrayContainer<T>, ILogSubject, INamedChildStates
     where T : notnull, new()
 {
     /// <summary>
@@ -45,6 +46,14 @@ internal class ArrayContainer<T> : ObservableState, IArrayContainer<T>, ILogSubj
     /// Gets the child states representing individual items in the array.
     /// </summary>
     public IReadOnlyList<ITrackedState> Children => _states.Select(x => x.Ref).ToArray();
+
+    /// <summary>
+    /// Gets the child states keyed by index, for routing dotted-path validation errors into nested children.
+    /// </summary>
+    public IEnumerable<KeyValuePair<string, ITrackedState>> NamedChildren =>
+        _states.Select(
+            (x, i) => new KeyValuePair<string, ITrackedState>(i.ToString(CultureInfo.InvariantCulture), x.Ref)
+        );
 
     /// <summary>
     /// Gets the logger instance for this container.

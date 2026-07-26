@@ -15,7 +15,7 @@ namespace Annium.Components.State.Forms.Internal;
 /// </summary>
 /// <typeparam name="TKey">The type of keys in the dictionary, must be non-null.</typeparam>
 /// <typeparam name="TValue">The type of values in the dictionary, must be non-null and have a parameterless constructor.</typeparam>
-internal class MapContainer<TKey, TValue> : ObservableState, IMapContainer<TKey, TValue>, ILogSubject
+internal class MapContainer<TKey, TValue> : ObservableState, IMapContainer<TKey, TValue>, ILogSubject, INamedChildStates
     where TKey : notnull
     where TValue : notnull, new()
 {
@@ -47,6 +47,12 @@ internal class MapContainer<TKey, TValue> : ObservableState, IMapContainer<TKey,
     /// Gets the keys of the dictionary.
     /// </summary>
     public IReadOnlyCollection<TKey> Keys => _states.Keys.ToArray();
+
+    /// <summary>
+    /// Gets the child states keyed by dictionary key, for routing dotted-path validation errors into nested children.
+    /// </summary>
+    public IEnumerable<KeyValuePair<string, ITrackedState>> NamedChildren =>
+        _states.Select(x => new KeyValuePair<string, ITrackedState>(x.Key.ToString() ?? string.Empty, x.Value.Ref));
 
     /// <summary>
     /// Gets the logger instance for this container.

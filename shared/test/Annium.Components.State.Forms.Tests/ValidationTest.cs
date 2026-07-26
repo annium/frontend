@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
 using Annium.Components.State.Forms.Extensions;
@@ -120,6 +122,102 @@ public class ValidationTest : TestBase
         state.AtAtomic(x => x.Name).Status.Is(Status.Error);
         state.AtAtomic(x => x.Name).Message.Is(GatedValidator.FreshError);
         state.AtAtomic(x => x.Age).Status.Is(Status.None);
+    }
+
+    /// <summary>
+    /// Tests that a validator error keyed to a nested property path (e.g. "Address.City") is routed into the
+    /// matching nested child container's atomic state, rather than being silently dropped.
+    /// </summary>
+    [Fact]
+    public void UseValidator_NestedPropertyError_RoutedToNestedChild()
+    {
+        // arrange
+        var factory = GetFactory();
+        var validator = new NestedKeyValidator();
+        var state = factory.CreateObject(
+            new Person
+            {
+                Name = "Max",
+                Address = new Address { City = "" },
+            }
+        );
+        state.UseValidator(validator);
+
+        // act: a real change triggers validation, which emits a labeled error keyed "Address.City"
+        state.Set(
+            new Person
+            {
+                Name = "Lex",
+                Address = new Address { City = "NYC" },
+            }
+        );
+
+        // assert: the nested error reaches the Address container's City atomic child
+        var city = state.AtObject(x => x.Address).AtAtomic(x => x.City);
+        city.Status.Is(Status.Error);
+        city.Message.Is(NestedKeyValidator.CityError);
+
+        // and: the unrelated top-level atomic (Name) is cleared to None
+        state.AtAtomic(x => x.Name).Status.Is(Status.None);
+    }
+
+    /// <summary>
+    /// Tests that a validator error keyed through a nested MAP value (e.g. "Depts.hr.Name") is routed into the
+    /// map value's nested atomic child — exercising per-key routing into a non-object composite.
+    /// </summary>
+    [Fact]
+    public void UseValidator_NestedMapValueError_RoutedToNestedChild()
+    {
+        // arrange
+        var factory = GetFactory();
+        var validator = new NestedMapKeyValidator();
+        var state = factory.CreateObject(new Org { Depts = new Dictionary<string, Dept> { ["hr"] = new Dept() } });
+        state.UseValidator(validator);
+
+        // act: change a value to trigger validation, which emits a labeled error keyed "Depts.hr.Name"
+        state.Set(new Org { Depts = new Dictionary<string, Dept> { ["hr"] = new Dept { Name = "HR" } } });
+
+        // assert: the error routed through the map value's key ("hr") to its Name atomic child
+        var name = state.AtMap(x => x.Depts).AtObject(x => x["hr"]).AtAtomic(x => x.Name);
+        name.Status.Is(Status.Error);
+        name.Message.Is(NestedMapKeyValidator.DeptError);
+    }
+
+    /// <summary>
+    /// Tests that recursive nested validation does not storm a nested composite container's aggregate Changed:
+    /// each intermediate composite is muted while its atomic descendants' statuses are set, so a component bound
+    /// to a nested container is not notified once per descendant during a validation cycle.
+    /// </summary>
+    [Fact]
+    public void UseValidator_NestedValidation_DoesNotStormNestedContainerNotifications()
+    {
+        // arrange
+        var log = new List<Unit>();
+        var factory = GetFactory();
+        var validator = new NestedKeyValidator();
+        var state = factory.CreateObject(
+            new Person
+            {
+                Name = "Max",
+                Address = new Address { City = "x" },
+            }
+        );
+        state.UseValidator(validator);
+        var address = state.AtObject(x => x.Address);
+        address.Changed.Subscribe(log.Add);
+
+        // act: change ONLY the top-level Name (Address value unchanged) so any Address notification would come
+        // solely from validation setting the nested City status
+        state.Set(
+            new Person
+            {
+                Name = "Lex",
+                Address = new Address { City = "x" },
+            }
+        );
+
+        // assert: the nested Address container is muted during validation → no per-descendant notification storm
+        log.IsEmpty();
     }
 
     /// <summary>
@@ -278,5 +376,95 @@ public class ValidationTest : TestBase
 
             return Result.Create().Error(nameof(User.Name), FreshError);
         }
+    }
+
+    /// <summary>
+    /// Test model with a nested composite (Address) child, used for nested-validation routing.
+    /// </summary>
+    private class Person
+    {
+        /// <summary>
+        /// Gets or sets the person name.
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the nested address.
+        /// </summary>
+        public Address Address { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Nested test model used as a composite child of <see cref="Person"/>.
+    /// </summary>
+    private class Address
+    {
+        /// <summary>
+        /// Gets or sets the city.
+        /// </summary>
+        public string City { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Validator stub that emits a single labeled error keyed to a nested property path ("Address.City"),
+    /// simulating a nested/sub-validator's dotted-path output.
+    /// </summary>
+    private sealed class NestedKeyValidator : IValidator<Person>
+    {
+        /// <summary>
+        /// The message emitted for the nested Address.City error.
+        /// </summary>
+        public const string CityError = "city required";
+
+        /// <summary>
+        /// Returns a result carrying a single labeled error keyed "Address.City".
+        /// </summary>
+        /// <param name="value">The value being validated.</param>
+        /// <param name="label">The label for the validation context.</param>
+        /// <returns>A result with the nested labeled error.</returns>
+        public Task<IResult> ValidateAsync(Person value, string label = "") =>
+            Task.FromResult<IResult>(Result.Create().Error("Address.City", CityError));
+    }
+
+    /// <summary>
+    /// Test model with a nested map of composite values, used for nested-map validation routing.
+    /// </summary>
+    private class Org
+    {
+        /// <summary>
+        /// Gets or sets the departments keyed by code.
+        /// </summary>
+        public Dictionary<string, Dept> Depts { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Nested test model used as a map value of <see cref="Org"/>.
+    /// </summary>
+    private class Dept
+    {
+        /// <summary>
+        /// Gets or sets the department name.
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Validator stub that emits a single labeled error keyed through a nested map value ("Depts.hr.Name").
+    /// </summary>
+    private sealed class NestedMapKeyValidator : IValidator<Org>
+    {
+        /// <summary>
+        /// The message emitted for the nested Depts.hr.Name error.
+        /// </summary>
+        public const string DeptError = "dept name required";
+
+        /// <summary>
+        /// Returns a result carrying a single labeled error keyed "Depts.hr.Name".
+        /// </summary>
+        /// <param name="value">The value being validated.</param>
+        /// <param name="label">The label for the validation context.</param>
+        /// <returns>A result with the nested labeled error.</returns>
+        public Task<IResult> ValidateAsync(Org value, string label = "") =>
+            Task.FromResult<IResult>(Result.Create().Error("Depts.hr.Name", DeptError));
     }
 }

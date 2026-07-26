@@ -1,9 +1,10 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Annium.Components.State.Forms.Internal;
 using Annium.Data.Operations;
 using Annium.Extensions.Validation;
 
@@ -99,15 +100,8 @@ public static class ObjectContainerValidationExtensions
     )
         where T : notnull, new()
     {
-        var children = state
-            .Children.Where(x => x.Value is IStatusContainer)
-            .ToDictionary(x => x.Key, x => (IStatusContainer)x.Value);
-
         using (state.Mute())
-        {
-            foreach (var child in children.Values)
-                child.SetStatus(Status.Validating);
-        }
+            SetValidating(state.Children);
 
         IResult result;
         try
@@ -122,21 +116,80 @@ public static class ObjectContainerValidationExtensions
         if (ct.IsCancellationRequested)
             return;
 
-        // plain (unlabeled) errors are not tied to a specific child, so apply them to every child rather than
-        // silently dropping them (a thrown validator surfaces as a plain error).
+        // plain (unlabeled) errors — e.g. a thrown validator — are not tied to a specific child, so apply them
+        // to every atomic descendant rather than silently dropping them.
         var plainMessage = result.PlainErrors.Count > 0 ? string.Join("; ", result.PlainErrors) : null;
 
         using (state.Mute())
+            ApplyStatuses(state.Children, result.LabeledErrors, plainMessage, string.Empty);
+    }
+
+    /// <summary>
+    /// Recursively marks every atomic (<see cref="IStatusContainer"/>) descendant of the given children as
+    /// <see cref="Status.Validating"/>.
+    /// </summary>
+    /// <param name="children">The named child states to descend.</param>
+    private static void SetValidating(IEnumerable<KeyValuePair<string, ITrackedState>> children)
+    {
+        foreach (var (_, child) in children)
         {
-            foreach (var (name, child) in children)
-                if (result.LabeledErrors.TryGetValue(name, out var errors))
-                    child.SetStatus(Status.Error, string.Join("; ", errors));
-                else if (plainMessage is not null)
-                    child.SetStatus(Status.Error, plainMessage);
-                else
-                    child.SetStatus(Status.None);
+            if (child is IStatusContainer atomic)
+                atomic.SetStatus(Status.Validating);
+            else
+                // mute the intermediate composite so setting its atomic descendants' statuses does not storm
+                // its aggregate Changed once per descendant (nested mutes compose via the depth counter).
+                using (child.Mute())
+                    SetValidating(NamedChildrenOf(child));
         }
     }
+
+    /// <summary>
+    /// Recursively applies validation results to atomic descendants, routing a dotted-path labeled error
+    /// (e.g. <c>Address.City</c>) into the matching nested child. A plain (unlabeled) error is applied to every
+    /// atomic descendant; a child with neither is cleared to <see cref="Status.None"/>.
+    /// </summary>
+    /// <param name="children">The named child states at the current level.</param>
+    /// <param name="labeledErrors">The validation labeled errors keyed by dotted path.</param>
+    /// <param name="plainMessage">The joined plain-error message, or null when there are none.</param>
+    /// <param name="prefix">The dotted-path prefix accumulated from ancestor segments.</param>
+    private static void ApplyStatuses(
+        IEnumerable<KeyValuePair<string, ITrackedState>> children,
+        IReadOnlyDictionary<string, IReadOnlyCollection<string>> labeledErrors,
+        string? plainMessage,
+        string prefix
+    )
+    {
+        foreach (var (name, child) in children)
+        {
+            var path = prefix.Length == 0 ? name : $"{prefix}.{name}";
+            if (child is IStatusContainer atomic)
+            {
+                if (labeledErrors.TryGetValue(path, out var errors))
+                    atomic.SetStatus(Status.Error, string.Join("; ", errors));
+                else if (plainMessage is not null)
+                    atomic.SetStatus(Status.Error, plainMessage);
+                else
+                    atomic.SetStatus(Status.None);
+            }
+            else
+            {
+                // labeled errors keyed exactly to a composite child (e.g. "Address" rather than "Address.City")
+                // have no atomic status surface to land on and are intentionally not applied here — validation
+                // targets leaf fields; the composite is descended with the accumulated path prefix. Mute the
+                // intermediate so its aggregate Changed is not stormed per descendant.
+                using (child.Mute())
+                    ApplyStatuses(NamedChildrenOf(child), labeledErrors, plainMessage, path);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the named child states of a composite container, or an empty sequence for a leaf/atomic state.
+    /// </summary>
+    /// <param name="state">The tracked state to inspect.</param>
+    /// <returns>The named children, or an empty sequence if the state has none.</returns>
+    private static IEnumerable<KeyValuePair<string, ITrackedState>> NamedChildrenOf(ITrackedState state) =>
+        state is INamedChildStates named ? named.NamedChildren : [];
 
     /// <summary>
     /// Mutable holder for the current validation cancellation source, enabling an atomic swap via
