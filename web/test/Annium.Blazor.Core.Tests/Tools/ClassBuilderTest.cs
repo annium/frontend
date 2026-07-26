@@ -104,12 +104,7 @@ public class ClassBuilderTest
     public void ClassBuilderT_NullAndWhitespace_Filtered()
     {
         // arrange: interleave null / whitespace-only fragments between real ones
-        var cb = ClassBuilder<User>
-            .With("a")
-            .With((string?)null)
-            .With("   ")
-            .With(x => (string?)null)
-            .With("b");
+        var cb = ClassBuilder<User>.With("a").With((string?)null).With("   ").With(x => (string?)null).With("b");
 
         // act
         var result = cb.Build(new User());
@@ -149,10 +144,7 @@ public class ClassBuilderTest
     public void ClassBuilder_BothPredicateBranches()
     {
         // arrange
-        var cb = ClassBuilder
-            .With("keep")
-            .With(() => false, "no-plain-if")
-            .With(() => true, () => "yes-get-if");
+        var cb = ClassBuilder.With("keep").With(() => false, "no-plain-if").With(() => true, () => "yes-get-if");
 
         // act
         var result = cb.Build();
