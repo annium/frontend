@@ -244,7 +244,10 @@ internal class LoadingSeriesSource<T> : ISeriesSource<T>, ILogSubject
 
         var items = await _load(Resolution, start, end);
 
-        this.Trace(items.Count > 0 ? $"loaded {items.Count} item(s) for {info}" : $"no items loaded for {info}");
+        if (items.Count > 0)
+            this.Trace<int, string>("loaded {count} item(s) for {info}", items.Count, info);
+        else
+            this.Trace<string>("no items loaded for {info}", info);
 
         return items;
     }
