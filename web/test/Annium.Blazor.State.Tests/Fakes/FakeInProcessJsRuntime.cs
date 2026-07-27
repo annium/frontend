@@ -61,50 +61,113 @@ internal sealed class FakeInProcessJsRuntime : IJSInProcessRuntime
         return (TResult)result!;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <param name="identifier">The JS constructor identifier.</param>
+    /// <param name="args">The constructor arguments.</param>
+    /// <returns>Never returns; always throws <see cref="NotSupportedException"/>.</returns>
     public IJSInProcessObjectReference InvokeConstructor(string identifier, params object?[]? args) =>
         throw new NotSupportedException(NotExercised);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <typeparam name="TValue">The requested value type.</typeparam>
+    /// <param name="identifier">The JS property identifier.</param>
+    /// <returns>Never returns; always throws <see cref="NotSupportedException"/>.</returns>
     public TValue GetValue<TValue>(string identifier) => throw new NotSupportedException(NotExercised);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <typeparam name="TValue">The value type to set.</typeparam>
+    /// <param name="identifier">The JS property identifier.</param>
+    /// <param name="value">The value to set.</param>
     public void SetValue<TValue>(string identifier, TValue value) => throw new NotSupportedException(NotExercised);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <typeparam name="TValue">The expected result type.</typeparam>
+    /// <param name="identifier">The JS identifier.</param>
+    /// <param name="args">The call arguments.</param>
+    /// <returns>Never returns; always throws <see cref="NotSupportedException"/>.</returns>
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) =>
         throw new NotSupportedException($"{NotExercised} — StorageBase only uses the sync API");
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <typeparam name="TValue">The expected result type.</typeparam>
+    /// <param name="identifier">The JS identifier.</param>
+    /// <param name="cancellationToken">A cancellation token.</param>
+    /// <param name="args">The call arguments.</param>
+    /// <returns>Never returns; always throws <see cref="NotSupportedException"/>.</returns>
     public ValueTask<TValue> InvokeAsync<TValue>(
         string identifier,
         CancellationToken cancellationToken,
         object?[]? args
     ) => throw new NotSupportedException($"{NotExercised} — StorageBase only uses the sync API");
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <param name="identifier">The JS constructor identifier.</param>
+    /// <param name="args">The constructor arguments.</param>
+    /// <returns>Never returns; always throws <see cref="NotSupportedException"/>.</returns>
     public ValueTask<IJSObjectReference> InvokeConstructorAsync(string identifier, object?[]? args) =>
         throw new NotSupportedException(NotExercised);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <param name="identifier">The JS constructor identifier.</param>
+    /// <param name="cancellationToken">A cancellation token.</param>
+    /// <param name="args">The constructor arguments.</param>
+    /// <returns>Never returns; always throws <see cref="NotSupportedException"/>.</returns>
     public ValueTask<IJSObjectReference> InvokeConstructorAsync(
         string identifier,
         CancellationToken cancellationToken,
         object?[]? args
     ) => throw new NotSupportedException(NotExercised);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <typeparam name="TValue">The requested value type.</typeparam>
+    /// <param name="identifier">The JS property identifier.</param>
+    /// <returns>Never returns; always throws <see cref="NotSupportedException"/>.</returns>
     public ValueTask<TValue> GetValueAsync<TValue>(string identifier) => throw new NotSupportedException(NotExercised);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <typeparam name="TValue">The requested value type.</typeparam>
+    /// <param name="identifier">The JS property identifier.</param>
+    /// <param name="cancellationToken">A cancellation token.</param>
+    /// <returns>Never returns; always throws <see cref="NotSupportedException"/>.</returns>
     public ValueTask<TValue> GetValueAsync<TValue>(string identifier, CancellationToken cancellationToken) =>
         throw new NotSupportedException(NotExercised);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <typeparam name="TValue">The value type to set.</typeparam>
+    /// <param name="identifier">The JS property identifier.</param>
+    /// <param name="value">The value to set.</param>
+    /// <returns>Never returns; always throws <see cref="NotSupportedException"/>.</returns>
     public ValueTask SetValueAsync<TValue>(string identifier, TValue value) =>
         throw new NotSupportedException(NotExercised);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported — <c>StorageBase</c> uses only the synchronous string-invoke API.
+    /// </summary>
+    /// <typeparam name="TValue">The value type to set.</typeparam>
+    /// <param name="identifier">The JS property identifier.</param>
+    /// <param name="value">The value to set.</param>
+    /// <param name="cancellationToken">A cancellation token.</param>
+    /// <returns>Never returns; always throws <see cref="NotSupportedException"/>.</returns>
     public ValueTask SetValueAsync<TValue>(string identifier, TValue value, CancellationToken cancellationToken) =>
         throw new NotSupportedException(NotExercised);
 
@@ -128,6 +191,7 @@ internal sealed class FakeInProcessJsRuntime : IJSInProcessRuntime
     /// Gets (creating if absent) the key/value map for the given storage name.
     /// </summary>
     /// <param name="storage">The JS storage object name.</param>
+    /// <returns>The key/value map backing the given storage.</returns>
     private Dictionary<string, string> GetStorage(string storage)
     {
         if (!_storages.TryGetValue(storage, out var store))
@@ -141,6 +205,7 @@ internal sealed class FakeInProcessJsRuntime : IJSInProcessRuntime
     /// </summary>
     /// <param name="store">The storage map.</param>
     /// <param name="index">The zero-based key index.</param>
+    /// <returns>The key at <paramref name="index"/>, or null if out of range.</returns>
     private static string? Key(Dictionary<string, string> store, int index) => store.Keys.ElementAtOrDefault(index);
 
     /// <summary>
@@ -149,6 +214,7 @@ internal sealed class FakeInProcessJsRuntime : IJSInProcessRuntime
     /// <param name="store">The storage map.</param>
     /// <param name="key">The key to set.</param>
     /// <param name="value">The value to store.</param>
+    /// <returns>Null — <c>setItem</c> is a void JS operation.</returns>
     private static object? SetItem(Dictionary<string, string> store, string key, string value)
     {
         store[key] = value;
@@ -161,6 +227,7 @@ internal sealed class FakeInProcessJsRuntime : IJSInProcessRuntime
     /// </summary>
     /// <param name="store">The storage map.</param>
     /// <param name="key">The key to remove.</param>
+    /// <returns>Null — <c>removeItem</c> is a void JS operation.</returns>
     private static object? RemoveItem(Dictionary<string, string> store, string key)
     {
         store.Remove(key);
@@ -172,6 +239,7 @@ internal sealed class FakeInProcessJsRuntime : IJSInProcessRuntime
     /// Empties the storage, mirroring <c>Storage.clear()</c>.
     /// </summary>
     /// <param name="store">The storage map.</param>
+    /// <returns>Null — <c>clear</c> is a void JS operation.</returns>
     private static object? ClearStore(Dictionary<string, string> store)
     {
         store.Clear();
