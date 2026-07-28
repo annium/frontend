@@ -222,9 +222,8 @@ public class LoadingSeriesSourceTests : TestBase
     /// stuck at true forever. This test pins the intended behavior (IsLoading eventually returns to false even
     /// after a failed load).
     /// </summary>
-    /// <returns>A task that represents the asynchronous test.</returns>
     [Fact]
-    public async Task LoadItems_LoadFails_ResetsIsLoading()
+    public void LoadItems_LoadFails_ResetsIsLoading()
     {
         // arrange
         Get<ITimeManager>().SetNow(_now);
@@ -248,9 +247,8 @@ public class LoadingSeriesSourceTests : TestBase
     /// with the first and throws, so only one of the two loads actually succeeds. This test pins the intended
     /// behavior (both overlapping loads complete successfully).
     /// </summary>
-    /// <returns>A task that represents the asynchronous test.</returns>
     [Fact]
-    public async Task LoadItems_ConcurrentOverlappingLoads_BothComplete()
+    public void LoadItems_ConcurrentOverlappingLoads_BothComplete()
     {
         // arrange
         Get<ITimeManager>().SetNow(_now);
