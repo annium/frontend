@@ -54,7 +54,6 @@ public class ServicePack : ServicePackBase
         container.AddStateFactory();
         container.AddCss();
         container.AddInterop();
-        container.AddStateFactory();
         container.AddAntDesign();
 
         return Task.CompletedTask;
